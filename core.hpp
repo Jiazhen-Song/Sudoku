@@ -3,12 +3,13 @@
 
 #include <array>
 #include <string>
+#include <vector>
 
 using board_t = std::array<std::array<int, 9>, 9>;
 
-board_t read_board(const std::string &filename);
+std::vector<board_t> read_boards(const std::string& filename);
 
-void write_board(const std::string &filename, const board_t &board);
+void write_boards(const std::string& filename, const std::vector<board_t>& boards);
 
 void print_board(const board_t &board);
 

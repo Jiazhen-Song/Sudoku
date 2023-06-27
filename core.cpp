@@ -1,44 +1,63 @@
 #include <fstream>
 #include <iostream>
-#include "core.hpp"
+#include <vector>
+#include "../src/core.hpp"
 
-board_t read_board(const std::string &filename) {
+
+int cpp_rand() {
+    static std::mt19937 gen(std::random_device{}());
+    static std::uniform_int_distribution<> dis;
+    return dis(gen);
+}
+
+int flag = 0;
+
+std::vector<board_t> read_boards(const std::string& filename) {
     std::ifstream fin(filename);
     if (!fin) {
         throw std::runtime_error("数独文件不存在");
     }
 
-    board_t board;
-    for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 9; j++) {
-            if (!fin) {
-                throw std::runtime_error("数独文件格式错误");
+    std::vector<board_t> boards;
+
+    std::string line;
+    while (std::getline(fin, line) && !line.empty()) {
+        std::stringstream linein(line);
+
+        board_t board;
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                char v{};
+                linein >> v;
+                if (!(v >= '1' && v <= '9' || v == '$')) {
+                    throw std::runtime_error("数独文件格式错误");
+                }
+                if (v == '$') {
+                    v = '0';
+                }
+                board[i][j] = v - '0';
             }
-            char v;
-            fin >> v;
-            if (!(v >= '1' && v <= '9' || v == '$')) {
-                throw std::runtime_error("数独文件格式错误");
-            }
-            if (v == '$') {
-                v = '0';
-            }
-            board[i][j] = v - '0';
         }
+        boards.emplace_back(board);
     }
-    return board;
+
+    return boards;
 }
 
-void write_board(const std::string &filename, const board_t &board) {
+void write_boards(const std::string& filename, const std::vector<board_t>& boards) {
     std::ofstream fout(filename);
-    for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 9; j++) {
-            char v = board[i][j] == 0 ? '$' : board[i][j] + '0';
-            fout << v;
+    for (const board_t& board : boards) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                char v = board[i][j] == 0 ? '$' : board[i][j] + '0';
+                fout << v;
+            }
         }
+        fout << std::endl;
     }
 }
 
-void print_board(const board_t &board) {
+void print_board(const board_t& board) {
     for (int i = 0; i < 9; i++) {
         if (i % 3 == 0) {
             std::cout << "+-------+-------+-------+" << std::endl;
@@ -47,7 +66,9 @@ void print_board(const board_t &board) {
             if (j % 3 == 0) {
                 std::cout << "| ";
             }
-            std::cout << (char) (board[i][j] == 0 ? ' ' : board[i][j] + '0') << " ";
+            std::cout << static_cast<char> (board[i][j] == 0 ?
+                ' ' : board[i][j] + '0')
+                << " ";
         }
         std::cout << "|" << std::endl;
     }
