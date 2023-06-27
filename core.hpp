@@ -4,6 +4,7 @@
 #include <array>
 #include <string>
 #include <vector>
+#include <utility>
 
 using board_t = std::array<std::array<int, 9>, 9>;
 
@@ -13,7 +14,7 @@ void write_boards(const std::string& filename, const std::vector<board_t>& board
 
 void print_board(const board_t &board);
 
-board_t generate_final_board();
+std::vector<board_t> generate_final_boards(int count);
 
 board_t solve_board(const board_t &board);
 

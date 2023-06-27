@@ -75,14 +75,25 @@ void print_board(const board_t& board) {
     std::cout << "+-------+-------+-------+" << std::endl;
 }
 
-board_t generate_final_board() {
+std::vector<board_t> generate_final_boards(int count) {
     // TODO: 生成数独终盘
     return {};
 }
 
+void solve(int i, int j, board_t& res, int solve_num) {
+    
+}
+
 board_t solve_board(const board_t &board) {
-    // TODO: 求解数独
-    return {};
+    flag = 0;
+    board_t res;
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            res[i][j] = board[i][j];
+        }
+    }
+    solve(0, 0, res, 1);
+    return res;
 }
 
 board_t generate_game_board(int mode, std::pair<int, int> range, bool unique) {
